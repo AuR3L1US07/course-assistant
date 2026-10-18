@@ -5,22 +5,14 @@
 data/(个人账号密文/课程记录/Cookie)、tests、.test-artifacts、__pycache__ 均不打包。
 .runtime 与 *.cjs 作为旁置资源随 exe 一起分发(不内嵌,避免撑爆单文件)。
 """
-from PyInstaller.utils.hooks import collect_all
-
 runtime_libs = ".runtime/python-libs"
 
 datas = []
 binaries = []
 hiddenimports = []
 
-# 完整收集 PySide6 与 shiboken6 的模块、DLL、Qt 插件
-for pkg in ("PySide6", "shiboken6"):
-    d, b, h = collect_all(pkg)
-    datas += d
-    binaries += b
-    hiddenimports += h
-
-# PySide6-Essentials 不打包 QtWebEngine 等重型模块,仅保证 GUI 所需
+# 由标准 Qt hooks 收集所需 DLL 与插件，不收集 QML 开发资源、头文件和工具。
+# collect_all 会引入未使用的深层 QML 路径，导致部分 Windows 环境解压失败。
 hiddenimports += [
     "PySide6.QtCore",
     "PySide6.QtGui",
