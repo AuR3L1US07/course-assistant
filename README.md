@@ -27,6 +27,14 @@
 
 > 完成情况以平台实际记录为准。任务点完成不等于考试、签到等所有要求完成；“待确认”也不表示已完成。请在学校及平台允许的范围内使用并核对结果。
 
+## 📦 EXE 便携版
+
+在 [Releases](https://github.com/AuR3L1US07/course-assistant/releases) 下载 `CourseAssistant-v0.1.0-windows-x64.zip`，完整解压到可写文件夹，双击其中的 **课程助手.exe**。无需安装 Python 或 Node.js；浏览器功能仍需安装 Google Chrome。
+
+请保留同目录的 `.runtime/`、全部 `.cjs` 脚本与 `cx_font_map.json`，不要只移动 EXE，也不要在压缩包中直接运行。首次启动后自行登录和配置 API，`data/` 会在使用时创建，请勿分享。Release 同时提供 SHA-256 校验文件。
+
+下面的安装步骤面向从源码运行的用户。
+
 ## 🚀 安装启动
 
 ### 1. 准备环境

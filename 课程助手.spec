@@ -45,6 +45,12 @@ a = Analysis(
 )
 pyz = PYZ(a.pure)
 
+# Qt 使用 Windows 自带的 ICU / UCRT。构建机 PATH 中的其他工具可能带有
+# 同名、不兼容的 DLL，不能将它们混入发布包覆盖系统实现。
+a.binaries = [entry for entry in a.binaries
+              if entry[0].replace('\\', '/').rsplit('/', 1)[-1].lower()
+              not in {'icuuc.dll', 'icudt78.dll', 'ucrtbase.dll'}]
+
 exe = EXE(
     pyz,
     a.scripts,
