@@ -3,11 +3,19 @@
 
 入口 launcher.py;PySide6 从 .runtime/python-libs 收集。
 data/(个人账号密文/课程记录/Cookie)、tests、.test-artifacts、__pycache__ 均不打包。
-.runtime 与 *.cjs 作为旁置资源随 exe 一起分发(不内嵌,避免撑爆单文件)。
+Node、Playwright、浏览器脚本和字体映射均内嵌，运行时解压至临时目录。
 """
 runtime_libs = ".runtime/python-libs"
 
-datas = []
+datas = [
+    ('.runtime/node.exe', '.runtime'),
+    ('.runtime/playwright-core', '.runtime/playwright-core'),
+    ('cx_font_map.json', '.'),
+]
+for script in ('browser_worker.cjs', 'category_reader.cjs', 'learning_visits.cjs',
+               'study_records.cjs', 'mooc_login.cjs', 'mooc_scanner.cjs',
+               'yuketang.cjs', 'yuketang_worker.cjs'):
+    datas.append((script, '.'))
 binaries = []
 hiddenimports = []
 

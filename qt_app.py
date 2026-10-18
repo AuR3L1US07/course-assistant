@@ -7,11 +7,10 @@ import threading
 import uuid
 from pathlib import Path
 
-if getattr(sys, "frozen", False):
-    ROOT = Path(sys.executable).resolve().parent
-else:
-    ROOT = Path(__file__).resolve().parent
-sys.path.insert(0, str(ROOT / '.runtime' / 'python-libs'))
+import settings
+ROOT = settings.ROOT
+if not getattr(sys, "frozen", False):
+    sys.path.insert(0, str(ROOT / '.runtime' / 'python-libs'))
 
 from PySide6.QtCore import Qt, QEvent, QRectF, QPointF, QSize, QTimer, QVariantAnimation, QEasingCurve
 from PySide6.QtGui import QColor, QPainter, QPainterPath, QRegion, QPen, QFont, QFontDatabase, QIcon, QPixmap, QPalette, QLinearGradient

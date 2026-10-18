@@ -3,18 +3,20 @@ import base64
 import ctypes
 from ctypes import wintypes
 import json
+import os
 import sys
 from pathlib import Path
 from api_client import APIConfig
 
 def _app_root():
-    """打包成单文件 exe 后,数据与运行时都放在 exe 所在目录,而非解压临时目录。"""
+    """打包版个人数据使用 LocalAppData，源码版保留项目内的数据目录。"""
     if getattr(sys, "frozen", False):
-        return Path(sys.executable).resolve().parent
+        return Path(os.environ.get('LOCALAPPDATA', str(Path.home() / 'AppData' / 'Local'))) / 'CourseAssistant'
     return Path(__file__).resolve().parent
 
 
 ROOT = _app_root()
+RESOURCE_ROOT = Path(sys._MEIPASS) if getattr(sys, "frozen", False) else ROOT
 CONFIG = ROOT / "data" / "settings.json"
 PLAYBACK_SPEEDS = (.75, 1, 1.25, 1.5, 2, 4, 8, 10, 16)
 

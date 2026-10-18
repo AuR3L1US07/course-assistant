@@ -27,11 +27,15 @@
 
 > 完成情况以平台实际记录为准。任务点完成不等于考试、签到等所有要求完成；“待确认”也不表示已完成。请在学校及平台允许的范围内使用并核对结果。
 
-## 📦 EXE 便携版
+## 📦 单文件 EXE
 
-在 [Releases](https://github.com/AuR3L1US07/course-assistant/releases) 下载 `CourseAssistant-v0.1.0-windows-x64.zip`，完整解压到可写文件夹，双击其中的 **课程助手.exe**。无需安装 Python 或 Node.js；浏览器功能仍需安装 Google Chrome。
+在 [Releases](https://github.com/AuR3L1US07/course-assistant/releases) 下载 **`CourseAssistant-v0.2.0-windows-x64.exe`**，可以直接放在桌面并双击运行。无需解压压缩包、安装 Python 或 Node.js；浏览器功能仍需安装 Google Chrome。
 
-请保留同目录的 `.runtime/`、全部 `.cjs` 脚本与 `cx_font_map.json`，不要只移动 EXE，也不要在压缩包中直接运行。首次启动后自行登录和配置 API，`data/` 会在使用时创建，请勿分享。Release 同时提供 SHA-256 校验文件。
+浏览器运行时、脚本与字体映射已内嵌，启动时自动解压至系统临时目录，正常退出后清理。桌面不会生成 `.runtime`、脚本或 `data` 文件夹。
+
+登录信息、题库、课程记录、设置及浏览器缓存会在 **`%LOCALAPPDATA%\CourseAssistant\data\`** 按需创建并持久保存。可以把这个路径粘贴到资源管理器地址栏打开。更换或移动 EXE 后仍使用同一份缓存；程序更新不会主动删除它。账号密码、API 密钥和保存的会话仍使用当前 Windows 用户加密，不随 EXE 分发。
+
+旧版 v0.1.0 压缩包使用 EXE 旁的 `data/`。如需迁移自己的旧数据，先退出程序和独立浏览器，在同一 Windows 账号下将旧 `data/` 备份后放到上述新位置；不要覆盖已有的新数据。源码版仍使用项目内 `data/`，不会自动导入开发者的本机数据。Release 同时提供 SHA-256 校验文件。
 
 下面的安装步骤面向从源码运行的用户。
 
@@ -202,6 +206,8 @@ MOOC 支持手机号密码及网易邮箱密码登录。修改账号密码后需
 | 清除本机账号与课程数据 | 清除平台账号、课程记录、浏览器资料及加密会话；API 配置保留。执行时按界面提示停止任务并确认 |
 
 ## 🔐 隐私与安全上传
+
+下表中的 `data/`，在单文件 EXE 中位于 `%LOCALAPPDATA%\CourseAssistant\data\`，从源码运行时位于项目目录。题库保存在其中的 `quiz_bank.json`，在收集到可用答案时自动写入，下次启动继续读取；题库与课程记录均是个人缓存，不随程序分享。
 
 **源码不需要真实账号、密码、API 密钥或个人课程数据。首次使用由使用者自行配置。**
 

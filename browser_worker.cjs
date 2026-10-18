@@ -3,6 +3,7 @@ const readline = require('node:readline');
 const path = require('node:path');
 const fs = require('node:fs');
 const crypto = require('node:crypto');
+const DATA_ROOT=path.resolve(process.env.COURSE_ASSISTANT_DATA_ROOT||path.join(__dirname,'data'));
 const {chromium} = require('./.runtime/playwright-core');
 const {loginYuketang,scanYuketang}=require('./yuketang.cjs');
 const {brushYuketang}=require('./yuketang_worker.cjs');
@@ -183,7 +184,8 @@ let savedSession=null, bootstrapReady=false;
 function brushTrace(stage,fields={}){
   if(require.main!==module)return;
   try{
-    const target=path.join(__dirname,'data','brush-debug.jsonl');
+    fs.mkdirSync(DATA_ROOT,{recursive:true});
+    const target=path.join(DATA_ROOT,'brush-debug.jsonl');
     if(fs.existsSync(target)&&fs.statSync(target).size>1024*1024)fs.writeFileSync(target,'');
     fs.appendFileSync(target,JSON.stringify({time:new Date().toISOString(),stage,...fields})+'\n');
   }catch{}
@@ -218,7 +220,7 @@ async function backgroundContext(address, platform='chaoxing'){
     }
   }
   // A headless worker must never lock the visible login browser's profile.
-  const directory=path.join(__dirname,'data','browser-background');
+  const directory=path.join(DATA_ROOT,'browser-background');
   const context=await chromium.launchPersistentContext(directory,{
     channel:'chrome',headless:true,viewport:{width:1440,height:1000},
     args:['--no-first-run','--hide-crash-restore-bubble'],
@@ -1515,7 +1517,7 @@ function stemKey(s){
 }
 
 // ---------- 本地题库：批阅页自动导入，答题时优先命中 ----------
-const QUIZ_BANK_FILE=path.join(__dirname,'data','quiz_bank.json');
+const QUIZ_BANK_FILE=path.join(DATA_ROOT,'quiz_bank.json');
 let quizBank=null;
 function loadQuizBank(){
   if(quizBank)return quizBank;

@@ -92,12 +92,12 @@ def ensure_browser(start_url="about:blank", stop=None):
 
 
 def command(action, url=None, address=None, stop=None, playback_speed='auto', task_options=None):
-    node = settings.ROOT / ".runtime" / "node.exe"
-    if not node.is_file() or not (settings.ROOT / ".runtime/playwright-core/package.json").is_file():
-        raise RuntimeError("缺少浏览器组件，请使用包含 .runtime 文件夹的完整软件目录。")
+    node = settings.RESOURCE_ROOT / ".runtime" / "node.exe"
+    if not node.is_file() or not (settings.RESOURCE_ROOT / ".runtime/playwright-core/package.json").is_file():
+        raise RuntimeError("缺少浏览器组件，请重新下载完整程序或安装源码依赖。")
     # Scans must not launch a visible Chrome just to obtain a debugging address.
     address = (address or endpoint() or "background") if action in BACKGROUND_ACTIONS else (address or ensure_browser(url or "https://i.chaoxing.com/", stop=stop))
-    args = [str(node), str(settings.ROOT / "browser_worker.cjs"), address, action] + ([url] if url else [])
+    args = [str(node), str(settings.RESOURCE_ROOT / "browser_worker.cjs"), address, action] + ([url] if url else [])
     if action in {'brush', 'yuketang_brush'}:
         args.append(str(playback_speed if playback_speed == 'auto' or playback_speed in settings.PLAYBACK_SPEEDS else 1))
     if action in {'brush', 'yuketang_brush'} and task_options is not None:
@@ -266,7 +266,8 @@ def run_task(action, stop, on_event, url=None, playback_speed='auto', task_optio
         return "任务已停止。"
     process = subprocess.Popen(command(action, url, stop=stop, playback_speed=playback_speed, task_options=task_options), stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                stderr=subprocess.DEVNULL, text=True, encoding="utf-8",
-                               creationflags=subprocess.CREATE_NO_WINDOW)
+                               creationflags=subprocess.CREATE_NO_WINDOW,
+                               env={**os.environ, 'COURSE_ASSISTANT_DATA_ROOT': str(settings.ROOT / 'data')})
     finished = threading.Event()
     def cancel():
         while not finished.wait(.2):
