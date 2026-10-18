@@ -1,0 +1,41 @@
+const assert=require('node:assert/strict');
+const {parseProgress}=require('../browser_worker.cjs');
+assert.deepEqual(parseProgress('已完成任务点: 26/42'),[26,42]);
+assert.deepEqual(parseProgress('已完成任务点：\n 0 / 12'),[0,12]);
+assert.deepEqual(parseProgress('已完成任务点: 0/0'),[0,0]);
+assert.equal(parseProgress('已完成任务点: 43/42'),null);
+assert.equal(parseProgress('26/42'),null);
+assert.equal(parseProgress('请先登录'),null);
+const {parseCompleted,parseRequired}=require('../study_records.cjs');
+assert.equal(parseCompleted('在线学习\n详情\n335次\n章节学习次数\n课程积分'),335);
+assert.equal(parseCompleted('在线学习\n详情\n0 次\n章节学习次数'),0);
+assert.equal(parseCompleted('在线学习\n详情\n1,200次\n章节学习次数'),1200);
+assert.equal(parseCompleted('章节学习次数 (10%) 我的成绩 10'),null);
+assert.equal(parseRequired('章节学习次数：10%\n章节学习次数达 300 次为满分'),300);
+assert.equal(parseRequired('章节学习次数达到 500 次得满分'),500);
+assert.equal(parseRequired('章节学习次数达 0 次为满分'),0);
+assert.equal(parseRequired('章节学习次数 (10%)\n我的成绩\n10'),null);
+assert.equal(parseRequired('查看考核标准\n请先登录'),null);
+const {parseActivities,parseDiscussion}=require('../category_reader.cjs');
+assert.deepEqual(parseActivities(['进行中（0）','已结束（1）']),{required:0,done:0,applies:false,error:''});
+assert.equal(parseActivities(['进行中（3）']).done,null);
+assert.equal(parseActivities(['请先登录']).applies,null);
+assert.equal(parseDiscussion('章节任务点：40%\n作业：60%','').applies,false);
+assert.equal(parseDiscussion('讨论：10%\n按内容质量评分','').required,null);
+const d=parseDiscussion('讨论：10%\n发帖至少 2 帖，回帖至少 3 次\n考核内容','讨论\n10帖\n发帖\n1帖\n回帖');
+assert.equal(d.required,5);
+assert.equal(d.done,3); // Extra posts cannot substitute for required replies.
+const {mergeDiscussionTopics}=require('../category_reader.cjs');
+const weightOnly=parseDiscussion('讨论：10%\n按内容质量评分','');
+assert.equal(mergeDiscussionTopics(weightOnly,0).applies,false);
+assert.equal(mergeDiscussionTopics(weightOnly,0).required,0);
+assert.equal(mergeDiscussionTopics(weightOnly,3).applies,null);
+assert.notEqual(mergeDiscussionTopics(weightOnly,null).applies,false); // Failure is not an empty list.
+const {parseHomework}=require('../category_reader.cjs');
+assert.deepEqual(parseHomework('全部 已完成 未完成 3/3',['已完成','未完成','待批阅']),
+  {required:3,done:2,applies:true,error:''});
+assert.equal(parseHomework('全部 已完成 未完成 1/3',['已完成']).applies,null);
+assert.equal(parseHomework('全部 已完成 未完成 3/3',['已完成']).applies,null);
+assert.equal(parseHomework('暂无作业',[]).applies,false);
+assert.equal(parseHomework('正在加载',[]).applies,null);
+assert.equal(parseHomework('全部 已完成 未完成 1/1',['已截止']).done,0);
