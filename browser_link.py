@@ -1,4 +1,4 @@
-"""Launch the app's Chrome and manage browser-worker requests in one place."""
+"""Launch an isolated Chrome or Edge and manage browser-worker requests."""
 import json
 import os
 import re
@@ -63,18 +63,25 @@ def endpoint():
     return None
 
 
+def find_browser():
+    for relative in ('Google/Chrome/Application/chrome.exe', 'Microsoft/Edge/Application/msedge.exe'):
+        for key in ('PROGRAMFILES', 'PROGRAMFILES(X86)', 'LOCALAPPDATA'):
+            base = os.environ.get(key)
+            if base:
+                candidate = Path(base) / relative
+                if candidate.is_file():
+                    return candidate
+    raise RuntimeError('未找到 Chrome 或 Microsoft Edge，请先安装其中一种浏览器。')
+
+
 def ensure_browser(start_url="about:blank", stop=None):
     with _launch_lock:
         address = endpoint()
         if address:
             return address
-        candidates = [Path(os.environ.get(key, "")) / "Google/Chrome/Application/chrome.exe"
-                      for key in ("PROGRAMFILES", "PROGRAMFILES(X86)", "LOCALAPPDATA")]
-        chrome = next((p for p in candidates if p.is_file()), None)
-        if not chrome:
-            raise RuntimeError("未找到 Chrome，请先安装 Google Chrome。")
+        browser = find_browser()
         PROFILE.mkdir(parents=True, exist_ok=True)
-        process = subprocess.Popen([str(chrome), f"--user-data-dir={PROFILE}", "--remote-debugging-port=0",
+        process = subprocess.Popen([str(browser), f"--user-data-dir={PROFILE}", "--remote-debugging-port=0",
                           "--remote-debugging-address=127.0.0.1", "--no-first-run",
                           "--hide-crash-restore-bubble", "--new-window", start_url],
                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -88,7 +95,7 @@ def ensure_browser(start_url="about:blank", stop=None):
             if process.poll() is not None:
                 break
             time.sleep(.25)
-        raise RuntimeError("无法连接课程浏览器。请退出课程助手之前打开的独立 Chrome 后重试，平常使用的 Chrome 不用关闭。")
+        raise RuntimeError("无法连接课程浏览器。请退出课程助手之前打开的独立 Chrome / Edge 后重试，日常使用的浏览器不用关闭。")
 
 
 def command(action, url=None, address=None, stop=None, playback_speed='auto', task_options=None):

@@ -4,7 +4,7 @@
 
 **Windows 桌面课程管理 · 多平台进度统计 · 独立浏览器 · 本机加密**
 
-🪟 Python + PySide6　｜　🌐 Chrome + Playwright　｜　🔐 Windows DPAPI
+🪟 Python + PySide6　｜　🌐 Chrome / Edge + Playwright　｜　🔐 Windows DPAPI
 
 [🚀 安装启动](#-安装启动) · [👤 平台登录](#-平台登录) · [📚 课程检查](#-课程检查) · [🔑 API 配置](#-api-配置) · [❓ 常见问题](#-常见问题)
 
@@ -19,7 +19,7 @@
 | 📚 多平台管理 | 超星泛雅 / 学习通、中国大学 MOOC、长江雨课堂，各自保留分类与检查结果 |
 | 📊 进度与待办 | 读取已发布项目，区分已完成、剩余、待确认与旧记录 |
 | 🔎 课程搜索 | 按名称查找课程，打开选中课程核对详情 |
-| 🌐 独立浏览器 | 专用 Chrome 资料目录，支持网页登录、验证码和会话复用 |
+| 🌐 独立浏览器 | 专用 Chrome / Edge 资料目录，支持网页登录、验证码和会话复用 |
 | ▶️ 任务控制 | 在已支持的平台尝试视频播放、文档浏览及习题处理，可暂停、继续和停止 |
 | 🔑 模型接口 | 配置兼容 Chat Completions 的接口，支持已接入流程中的文本与图片题 |
 | 🔐 本机存储 | 平台账号密码、API 密钥和保存的网页会话使用 Windows DPAPI 加密 |
@@ -29,7 +29,7 @@
 
 ## 📦 单文件 EXE
 
-在 [Releases](https://github.com/AuR3L1US07/course-assistant/releases) 下载 **`CourseAssistant-v0.2.0-windows-x64.exe`**，可以直接放在桌面并双击运行。无需解压压缩包、安装 Python 或 Node.js；浏览器功能仍需安装 Google Chrome。
+在 [Releases](https://github.com/AuR3L1US07/course-assistant/releases) 下载 **`CourseAssistant-v0.2.1-windows-x64.exe`**，可以直接放在桌面并双击运行。无需解压压缩包、安装 Python 或 Node.js；浏览器优先使用 Chrome；未安装 Chrome 时自动使用 Microsoft Edge，两者都未安装才提示安装。
 
 浏览器运行时、脚本与字体映射已内嵌，启动时自动解压至系统临时目录，正常退出后清理。桌面不会生成 `.runtime`、脚本或 `data` 文件夹。
 
@@ -45,7 +45,7 @@
 
 - Windows 桌面环境：账号加密依赖 Windows DPAPI。
 - Python 3.12：安装后应能执行 `python --version`。
-- Google Chrome：使用标准安装位置，程序会启动独立课程浏览器。
+- Google Chrome 或 Microsoft Edge：优先 Chrome，没有 Chrome 时自动使用 Edge，程序使用独立资料目录。
 - 源码部署需要 Node.js 20 或以上版本和 npm，以准备浏览器组件。
 
 在仓库页面点击 **Code → Download ZIP** 后解压，或通过 Git 克隆。在源码目录打开 PowerShell，执行以下步骤。
@@ -71,7 +71,7 @@ npm install --prefix .runtime --no-save playwright-core@1.62.1
 Copy-Item -Recurse -LiteralPath .runtime/node_modules/playwright-core -Destination .runtime/playwright-core
 ```
 
-项目直接加载 `.runtime/playwright-core`，只装在 `node_modules` 中还不够。程序使用系统 Google Chrome，不需要另行下载 Playwright 浏览器。
+项目直接加载 `.runtime/playwright-core`，只装在 `node_modules` 中还不够。程序使用系统 Chrome 或 Edge，不需要另行下载 Playwright 浏览器。
 
 ```text
 课程助手/
@@ -234,9 +234,9 @@ MOOC 支持手机号密码及网易邮箱密码登录。修改账号密码后需
 </details>
 
 <details>
-<summary><b>提示缺少浏览器组件或未找到 Chrome？</b></summary>
+<summary><b>提示缺少浏览器组件或未找到浏览器？</b></summary>
 
-确认 `.runtime/node.exe`、`.runtime/playwright-core/package.json` 存在，并已安装 Google Chrome。仅安装 Python 依赖不能补齐浏览器组件。
+确认 `.runtime/node.exe`、`.runtime/playwright-core/package.json` 存在，并已安装 Chrome 或 Edge。仅安装 Python 依赖不能补齐浏览器组件。
 
 </details>
 

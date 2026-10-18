@@ -10,6 +10,18 @@ const {brushYuketang}=require('./yuketang_worker.cjs');
 const platformRoot=platform=>platform==='yuketang'?'yuketang.cn':platform==='mooc'?'icourse163.org':'chaoxing.com';
 const PLAYBACK_SPEEDS=[.75,1,1.25,1.5,2,4,8,10,16];
 
+function browserExecutable(){
+  for(const relative of ['Google/Chrome/Application/chrome.exe','Microsoft/Edge/Application/msedge.exe']){
+    for(const key of ['PROGRAMFILES','PROGRAMFILES(X86)','LOCALAPPDATA']){
+      const base=process.env[key];
+      if(!base)continue;
+      const candidate=path.join(base,...relative.split('/'));
+      try{if(fs.statSync(candidate).isFile())return candidate;}catch{}
+    }
+  }
+  throw new Error('未找到 Chrome 或 Microsoft Edge，请先安装其中一种浏览器。');
+}
+
 // --- 超星加密字体解密(纯 Node,无第三方依赖) ---
 // 原理:加密字体内嵌 base64 于页面;每个字形坐标串的 md5 与社区映射表
 // (cx_font_map.json,hash→"uniXXXX")对查得到真实汉字;康熙部首单独替换。
@@ -222,7 +234,7 @@ async function backgroundContext(address, platform='chaoxing'){
   // A headless worker must never lock the visible login browser's profile.
   const directory=path.join(DATA_ROOT,'browser-background');
   const context=await chromium.launchPersistentContext(directory,{
-    channel:'chrome',headless:true,viewport:{width:1440,height:1000},
+    executablePath:browserExecutable(),headless:true,viewport:{width:1440,height:1000},
     args:['--no-first-run','--hide-crash-restore-bubble'],
   });
   try{
