@@ -29,7 +29,7 @@
 
 ## 📦 单文件 EXE
 
-在 [Releases](https://github.com/AuR3L1US07/course-assistant/releases) 下载 **`CourseAssistant-v0.2.1-windows-x64.exe`**，可以直接放在桌面并双击运行。无需解压压缩包、安装 Python 或 Node.js；浏览器优先使用 Chrome；未安装 Chrome 时自动使用 Microsoft Edge，两者都未安装才提示安装。
+在 [Releases](https://github.com/AuR3L1US07/course-assistant/releases) 下载 **`CourseAssistant-v0.2.2-windows-x64.exe`**，可以直接放在桌面并双击运行。无需解压压缩包、安装 Python 或 Node.js；浏览器优先使用 Chrome；未安装 Chrome 时自动使用 Microsoft Edge，两者都未安装才提示安装。
 
 浏览器运行时、脚本与字体映射已内嵌，启动时自动解压至系统临时目录，正常退出后清理。桌面不会生成 `.runtime`、脚本或 `data` 文件夹。
 

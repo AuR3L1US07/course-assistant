@@ -97,8 +97,11 @@ function worker(){
   for(const reviewMode of [false,true]){
     const navigation=worker();
     navigation(`
-      let jumps=0,closed=false;
+      let jumps=0,closed=false,polls=0;
+      // 未提交成功的测验会让 worker 停在原地等待手动指令；
+      // 这里模拟用户两次轮询后离开页面，让用例可以收尾。
       const page={on:()=>{},addInitScript:async()=>{},goto:async()=>{},
+        evaluate:async()=>{},isClosed:()=>++polls>1,
         url:()=> 'https://test.chaoxing.com/course',
         getByText:()=>({first:()=>({click:async()=>{}})}),
         close:async()=>{closed=true;}};

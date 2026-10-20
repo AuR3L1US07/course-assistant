@@ -74,7 +74,7 @@ const {defaultMuteMedia,chapterCandidates,enterChapter,sectionState,scrollDocume
     const result=await brushOne(context,'https://fixture.chaoxing.com/course',m=>messages.push(m));
     assert.match(result,/播放 1 个视频，浏览到底 1 份文档/,'live to video to document end-to-end');
     assert.match(result,/跳过 1 个/);
-    assert.ok(messages.some(m=>m.includes('直播未开始')));
+    assert.ok(messages.some(m=>m.includes('直播')&&m.includes('保留未完成状态')),'unplayed live is reported and kept pending');
     assert.ok(context.pages().some(p=>p.frames().some(f=>f.url().endsWith('/pdf/view'))),'uncompleted live leaves course available');
     await context.close();
     console.log('Course tasks: colored catalogue, confirmed entry, live -> video -> PPT, cancel and no-op navigation passed');
